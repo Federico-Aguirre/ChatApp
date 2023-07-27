@@ -1,0 +1,6 @@
+:root {
+    --darkBackgroundColor: hsl(48, 5%, 22%);
+    --bright: hsl(0, 0%, 90%);
+    --primaryColor: hsl(221, 44%, 41%);
+    --secondaryColor: hsl(220, 35%, 71%);
+}

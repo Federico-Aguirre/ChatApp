@@ -1,0 +1,15 @@
+.auth {
+    text-align: center;
+    overflow-y: hidden;
+}
+
+.auth button {
+    width: 200px;
+    height: 75px;
+    border: none;
+    background-color: var(--primaryColor);
+    color: var(--bright);
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+}

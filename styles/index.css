@@ -1,0 +1,78 @@
+@import url("../styles/Normalize.css");
+@import url("../styles/Variables.css");
+
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light dark;
+    color: var(--darkBackgroundColor);
+    background-color: var(--bright);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+}
+
+::-webkit-scrollbar {
+    width: 1.3em;
+}
+
+::-webkit-scrollbar:hover {
+    width: 2em;
+}
+
+/*color del fondo de scroll*/
+::-webkit-scrollbar-track-piece {
+    background: var(--primaryColor);
+}
+
+/*color de la barra de scroll*/
+::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 14px 140px var(--secondaryColor);
+    border-radius: 14px;
+}
+
+a {
+    font-weight: 500;
+    color: var(--darkBackgroundColor);
+    text-decoration: inherit;
+}
+
+body {
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
+    background-color: var(--bright);
+}
+
+h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+}
+
+button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: var(--primaryColor);
+    cursor: pointer;
+    transition: border-color 0.25s;
+}
+
+input {
+    background-color: var(--bright);
+    color: var(--darkBackgroundColor);
+}
+
+button:focus,
+button:focus-visible {
+    outline: 4px auto -webkit-focus-ring-color;
+}
