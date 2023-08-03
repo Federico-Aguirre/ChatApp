@@ -17,7 +17,7 @@ export const AppWrapper = ({ children, isAuth, setIsAuth, setIsInChat }) => {
   return (
     <div className="App">
       <div className="app-header">
-        <h1> Welcome To Chat App - Made By Federico Aguirre </h1>
+        <h1> Welcome To Chat App - By Federico Aguirre </h1>
         {isAuth && (
           <div className="sign-out">
             <button onClick={signUserOut}> Sign Out</button>
