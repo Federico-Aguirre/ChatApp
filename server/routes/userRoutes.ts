@@ -43,8 +43,14 @@ router.get("/", async (_req: Request, res: Response) => {
 // POST /api/users/add-contact - Agregar contacto por Nombre#1234 o Tag
 router.post("/add-contact", authenticate, async (req: any, res: Response) => {
   try {
-    const { contactTag, targetTag, username, discriminator, tag: inputTag, userTag } = req.body;
-    const currentUserId = req.userId;
+    const { contactTag, targetTag, username, discriminator, tag: inputTag, userTag, userId: bodyUserId } = req.body;
+    
+    // Obtener el ID del usuario desde el middleware (varias alternativas) o el body
+    const currentUserId = req.userId || req.user?._id || req.user?.id || bodyUserId;
+
+    if (!currentUserId) {
+      return res.status(401).json({ message: "No se pudo autenticar la sesión del usuario." });
+    }
 
     let searchName = "";
     let searchDiscriminator = "";
@@ -74,16 +80,14 @@ router.post("/add-contact", authenticate, async (req: any, res: Response) => {
       return res.status(400).json({ message: "No puedes agregarte a ti mismo." });
     }
 
-    // Agregar mutuamente en DB sin duplicar mediante $addToSet
+    // Agregar mutuamente en la base de datos sin duplicar
     await User.findByIdAndUpdate(currentUserId, {
       $addToSet: { contacts: targetUser._id },
     });
 
-    const currentUser = await User.findByIdAndUpdate(
-      targetUser._id,
-      { $addToSet: { contacts: currentUserId } },
-      { new: true }
-    );
+    await User.findByIdAndUpdate(targetUser._id, {
+      $addToSet: { contacts: currentUserId },
+    });
 
     const currentUserInfo = await User.findById(currentUserId).select(
       "name email avatar discriminator status"
