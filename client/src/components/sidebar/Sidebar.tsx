@@ -156,7 +156,7 @@ export const Sidebar = () => {
     if (!token || !contact._id || !myUserId) return;
 
     try {
-      const res = await fetch("${API_URL}/api/channels/direct", {
+      const res = await fetch(`${API_URL}/api/channels/direct`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -188,7 +188,7 @@ export const Sidebar = () => {
     if (!userId || !token) return "Debes iniciar sesión nuevamente";
 
     try {
-      const res = await fetch("${API_URL}/api/users/add-contact", {
+      const res = await fetch(`${API_URL}/api/users/add-contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -214,7 +214,7 @@ export const Sidebar = () => {
     if (!userId || !token) return;
 
     try {
-      const res = await fetch("${API_URL}/api/users/remove-contact", {
+      const res = await fetch(`${API_URL}/api/users/remove-contact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

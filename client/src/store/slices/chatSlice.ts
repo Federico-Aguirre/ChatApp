@@ -43,7 +43,7 @@ export const fetchUsers = createAsyncThunk(
   "chat/fetchUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch("${BASE_URL}/api/users");
+      const res = await fetch(`${BASE_URL}/api/users`);
       if (!res.ok) throw new Error("Error al cargar usuarios");
       return (await res.json()) as User[];
     } catch (err: any) {
@@ -59,7 +59,7 @@ export const createChannel = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch("${BASE_URL}/api/channels", {
+      const res = await fetch(`${BASE_URL}/api/channels`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, isPrivate: true, createdBy }),

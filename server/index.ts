@@ -42,6 +42,10 @@ app.use((_req, res, next) => {
   next();
 });
 
+app.get("/", (_req, res) => {
+  res.status(200).send("OK");
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/channels", channelRoutes);
 app.use("/api/users", userRoutes);
