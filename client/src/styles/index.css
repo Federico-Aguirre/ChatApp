@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: hsl(239, 84%, 67%);
+  --color-brand-hover: hsl(243, 75%, 59%);
+  --color-brand-active: hsl(245, 58%, 51%);
+
+  --color-dark-bg: hsl(222, 47%, 11%);
+  --color-dark-card: hsl(217, 33%, 17%);
+  --color-dark-input: hsl(215, 25%, 27%);
+  --color-dark-border: hsl(215, 19%, 35%);
+
+  --color-chat-user: hsl(243, 75%, 59%);
+  --color-chat-other: hsl(215, 25%, 27%);
+
+  --text-msg-title: 0.875rem;
+  --text-msg-body: 0.95rem;
+  --text-msg-time: 0.7rem;
+}
+
+body {
+  background-color: var(--color-dark-bg);
+  color: #f8fafc;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
