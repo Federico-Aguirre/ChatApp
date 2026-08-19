@@ -38,7 +38,7 @@ export const Sidebar = () => {
     if (!userId || !token || token === "null" || token === "undefined") return;
 
     try {
-      const res = await fetch(`${API_URL}/api/channels/direct/api/users/contacts/${userId}`, {
+      const res = await fetch(`${API_URL}/api/users/contacts/${userId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ export const Sidebar = () => {
     } catch (err) {
       console.error("[Sidebar] Error al obtener contactos:", err);
     }
-  }, [userId, tokenFromRedux]);
+  }, [userId, tokenFromRedux, API_URL]);
 
   useEffect(() => {
     if (userId) {
