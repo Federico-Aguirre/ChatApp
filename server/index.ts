@@ -16,9 +16,21 @@ import User from "./models/User";
 
 const app = express();
 
+// Lista de dominios permitidos (Local + Vercel)
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.CLIENT_URL || "https://federico-aguirre-chat-app.vercel.app",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Bloqueado por políticas de CORS"));
+      }
+    },
     credentials: true,
   })
 );
@@ -62,8 +74,9 @@ const io = new Server<
   Record<string, unknown>
 >(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     methods: ["GET", "POST", "DELETE"],
+    credentials: true,
   },
 });
 
@@ -132,11 +145,10 @@ io.on("connection", (socket) => {
 
           if (
             memberIdStr &&
-            memberIdStr !== senderIdStr && // EVITA QUE EL EMISOR SE AGREGUE A SÍ MISMO
+            memberIdStr !== senderIdStr &&
             mongoose.Types.ObjectId.isValid(senderIdStr) &&
             mongoose.Types.ObjectId.isValid(memberIdStr)
           ) {
-            // Re-agregar emisor al receptor y viceversa
             await User.findByIdAndUpdate(memberIdStr, {
               $addToSet: { contacts: new mongoose.Types.ObjectId(senderIdStr) },
             });
@@ -144,7 +156,6 @@ io.on("connection", (socket) => {
               $addToSet: { contacts: new mongoose.Types.ObjectId(memberIdStr) },
             });
 
-            // Asegurar miembros en el canal
             await Channel.findByIdAndUpdate(channelIdStr, {
               $addToSet: {
                 members: {
@@ -176,15 +187,12 @@ io.on("connection", (socket) => {
       };
       const cleanChannel = populatedChannel.toObject();
 
-      // Transmitir mensaje a la sala del canal
       io.to(channelIdStr).emit("receive_message", messageToEmit);
 
-      // Emitir a salas individuales de Socket
       if (populatedChannel.members && populatedChannel.members.length > 0) {
         for (const member of populatedChannel.members) {
           const memberIdStr = member._id ? member._id.toString() : member.toString();
           if (memberIdStr) {
-            // NO emitir new_channel si es un chat directo (evita el canal extra en Sidebar)
             if (!isDM) {
               io.to(memberIdStr).emit("new_channel", cleanChannel);
             }

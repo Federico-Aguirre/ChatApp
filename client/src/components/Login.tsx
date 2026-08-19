@@ -1,9 +1,10 @@
 import { useState, useCallback, memo, FormEvent, Dispatch, SetStateAction } from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import { useDispatch } from "react-redux"; // 👈 1. Importar useDispatch
-import { setAuthData } from "../store/slices/authSlice"; // 👈 2. Importar setAuthData (ajusta la ruta según tu estructura)
+import { useDispatch } from "react-redux";
+import { setAuthData } from "../store/slices/authSlice";
 
-const API_URL = "http://localhost:5000/api/auth";
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = `${BASE_URL}/api/auth`;
 
 interface AuthProps {
   setToken: Dispatch<SetStateAction<string | null>>;
@@ -42,7 +43,7 @@ const MemoizedGoogleLogin = memo(({
 MemoizedGoogleLogin.displayName = "MemoizedGoogleLogin";
 
 export const Auth = ({ setToken }: AuthProps) => {
-  const dispatch = useDispatch(); // 👈 3. Inicializar dispatch
+  const dispatch = useDispatch();
   const [isRegister, setIsRegister] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -69,7 +70,7 @@ export const Auth = ({ setToken }: AuthProps) => {
         throw new Error(data.message || "Error al procesar la solicitud");
       }
 
-      // 💡 Actualizar Redux de inmediato
+      // Actualizar Redux de inmediato
       dispatch(setAuthData({ token: data.token, user: data.user as any }));
       setToken(data.token);
     } catch (err) {
@@ -105,7 +106,7 @@ export const Auth = ({ setToken }: AuthProps) => {
           return;
         }
 
-        // 💡 Actualizar Redux de inmediato para redirigir al instante
+        // Actualizar Redux de inmediato para redirigir al instante
         dispatch(setAuthData({ token: data.token, user: data.user as any }));
         setToken(data.token);
       } catch (err) {

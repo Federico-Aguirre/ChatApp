@@ -46,7 +46,6 @@ export const Chat = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // En Chat.tsx -> handleSubmit
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!newMessage.trim() || !channel) return;

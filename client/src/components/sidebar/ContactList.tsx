@@ -5,7 +5,7 @@ interface ContactListProps {
   onRemoveContact: (contactId: string) => void;
   onOpenAddModal: () => void;
   onSelectContact: (contact: User) => void;
-  unreadUsers: string[]; // 🔥 NUEVO: Recibe los IDs de usuarios con mensajes no leídos
+  unreadUsers: string[]; // Recibe los IDs de usuarios con mensajes no leídos
 }
 
 export const ContactList = ({
@@ -13,7 +13,7 @@ export const ContactList = ({
   onRemoveContact,
   onOpenAddModal,
   onSelectContact,
-  unreadUsers, // 🔥 NUEVO: Lo extraemos
+  unreadUsers,
 }: ContactListProps) => {
   return (
     <div>
@@ -34,7 +34,7 @@ export const ContactList = ({
           <p className="text-xs text-slate-500 px-1">Sin contactos aún</p>
         ) : (
           contacts.map((contact) => {
-            // 🔥 Comprobamos si este contacto nos ha enviado un mensaje que no hemos leído
+            // Comprobamos si este contacto nos ha enviado un mensaje que no hemos leído
             const hasUnread = contact._id && unreadUsers.includes(contact._id);
 
             return (

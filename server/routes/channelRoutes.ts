@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
 router.post("/direct", async (req, res) => {
   const { currentUserId, contactId, userId, recipientId, targetUserId } = req.body;
 
-  // 1. Obtener ID del usuario emisor (del body o decodificando el Token)
+  // Obtener ID del usuario emisor (del body o decodificando el Token)
   let user1 = currentUserId || userId;
   if (!user1) {
     const authHeader = req.headers.authorization;
@@ -49,7 +49,7 @@ router.post("/direct", async (req, res) => {
     }
   }
 
-  // 2. Obtener ID del usuario receptor
+  // Obtener ID del usuario receptor
   const user2 = contactId || recipientId || targetUserId;
 
   if (!user1 || !user2) {
@@ -174,10 +174,10 @@ router.post("/:id/members", async (req, res) => {
       return res.status(400).json({ message: "Ingresa una etiqueta válida" });
     }
 
-    // 1. Limpiar el texto ingresado
+    // Limpiar el texto ingresado
     const cleanTag = userTag.trim().replace(/^[@]/, "").trim();
 
-    // 2. Si viene en formato "Nombre#1234", extraemos la parte del nombre ("Nombre")
+    // Si viene en formato "Nombre#1234", extrae la parte del nombre ("Nombre")
     const parts = cleanTag.split("#");
     const baseName = parts[0].trim();
 
@@ -188,7 +188,7 @@ router.post("/:id/members", async (req, res) => {
     const escapedBaseName = baseName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const baseNameRegex = new RegExp(`^${escapedBaseName}$`, "i");
 
-    // 3. Buscar coincidencia en la base de datos
+    // Busca coincidencia en la base de datos
     const targetUser = await User.findOne({
       $or: [
         { tag: fullRegex },
@@ -206,13 +206,13 @@ router.post("/:id/members", async (req, res) => {
       return res.status(404).json({ message: "No se encontró ningún usuario con esa etiqueta" });
     }
 
-    // 4. Validar si el usuario que realiza la solicitud es admin
+    // Validar si el usuario que realiza la solicitud es admin
     const isAdmin = channel.admins.some((id) => id.toString() === requestingUserId);
     if (!isAdmin) {
       return res.status(403).json({ message: "Solo los administradores pueden agregar miembros" });
     }
 
-    // 5. Validar si ya es miembro
+    // Valida si ya es miembro
     const isAlreadyMember = channel.members.some(
       (m) => m.toString() === targetUser._id.toString()
     );
@@ -220,18 +220,18 @@ router.post("/:id/members", async (req, res) => {
       return res.status(400).json({ message: "El usuario ya es miembro de este canal" });
     }
 
-    // 6. Agregar al canal y guardar
+    // Agregar al canal y guardar
     channel.members.push(targetUser._id as any);
     await channel.save();
 
-    // 7. Poblar los datos del canal para enviarlo completo al frontend
+    // Poblar los datos del canal para enviarlo completo al frontend
     const populatedChannel = await Channel.findById(channel._id)
       .populate("members", "name email avatar status discriminator")
       .populate("createdBy", "name email");
 
     const finalChannelData = populatedChannel || channel;
 
-    // 8. Emitir Socket al usuario agregado
+    // Emitir Socket al usuario agregado
     const io = req.app.get("io");
     if (io) {
       io.to(targetUser._id.toString()).emit("new_channel", finalChannelData);

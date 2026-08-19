@@ -30,13 +30,15 @@ export const Sidebar = () => {
 
   const userId = currentUser?._id || (currentUser as unknown as { id: string })?.id;
 
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   const fetchContacts = useCallback(async () => {
     const token = tokenFromRedux || localStorage.getItem("token");
 
     if (!userId || !token || token === "null" || token === "undefined") return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/users/contacts/${userId}`, {
+      const res = await fetch(`${API_URL}/api/channels/direct/api/users/contacts/${userId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -154,7 +156,7 @@ export const Sidebar = () => {
     if (!token || !contact._id || !myUserId) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/channels/direct", {
+      const res = await fetch("${API_URL}/api/channels/direct", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -186,7 +188,7 @@ export const Sidebar = () => {
     if (!userId || !token) return "Debes iniciar sesión nuevamente";
 
     try {
-      const res = await fetch("http://localhost:5000/api/users/add-contact", {
+      const res = await fetch("${API_URL}/api/users/add-contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -212,7 +214,7 @@ export const Sidebar = () => {
     if (!userId || !token) return;
 
     try {
-      const res = await fetch("http://localhost:5000/api/users/remove-contact", {
+      const res = await fetch("${API_URL}/api/users/remove-contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

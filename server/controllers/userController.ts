@@ -17,7 +17,7 @@ export const getContacts = async (req: Request, res: Response) => {
 // Agregar contacto mediante Tag (ej. Juan#4821)
 export const addContact = async (req: Request, res: Response) => {
   try {
-    const { userId, userTag } = req.body; // userTag ej: "Juan#4821"
+    const { userId, userTag } = req.body; // userTag
 
     if (!userTag.includes("#")) {
       return res.status(400).json({

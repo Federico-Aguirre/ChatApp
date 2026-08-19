@@ -1,5 +1,5 @@
 import { Middleware } from "@reduxjs/toolkit";
-import { socket } from "../../socket"; // 💡 Importación centralizada desde socket.ts
+import { socket } from "../../socket";
 import {
   addMessage,
   addChannelFromSocket,
@@ -20,7 +20,7 @@ export const socketMiddleware: Middleware = (store) => (next) => (action: any) =
 
   const isValidToken = Boolean(token && token !== "null" && token !== "undefined");
 
-  // 1. Manejar conexión y unir al usuario a su sala personal
+  // Manejar conexión y unir al usuario a su sala personal
   if (action.type === "auth/setAuthData" || action.type === "auth/login/fulfilled") {
     const activeToken = action.payload?.token || token;
     const activeUser = action.payload?.user || action.payload?.currentUser || currentUser;
@@ -49,7 +49,7 @@ export const socketMiddleware: Middleware = (store) => (next) => (action: any) =
     socket.emit("join_user", userId);
   }
 
-  // 2. Inicializar listeners una sola vez
+  // Inicializar listeners una sola vez
   if (!isListenersInitialized) {
     isListenersInitialized = true;
 
@@ -141,7 +141,7 @@ export const socketMiddleware: Middleware = (store) => (next) => (action: any) =
     });
   }
 
-  // 3. Unirse al canal activo
+  // Unirse al canal activo
   if (action.type === "chat/setActiveChannel") {
     const channelId = action.payload?._id || action.payload;
     if (channelId) {
@@ -153,7 +153,7 @@ export const socketMiddleware: Middleware = (store) => (next) => (action: any) =
     }
   }
 
-  // 4. Enviar mensaje
+  // Enviar mensaje
   if (action.type === "chat/sendMessage") {
     const payloadChannelId = typeof action.payload === "object" ? action.payload?.channelId : null;
     const payloadSenderId = typeof action.payload === "object" ? action.payload?.senderId : null;

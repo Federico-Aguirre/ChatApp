@@ -16,7 +16,7 @@ function App() {
 
   // Detecta en tiempo real si Render está tardando en despertar
   useEffect(() => {
-    // Si la respuesta tarda más de 2.5 segundos, activamos el aviso
+    // Si la respuesta tarda más de 2.5 segundos, activa el aviso
     const timer = setTimeout(() => {
       setIsServerWakingUp(true);
     }, 2500);
@@ -27,7 +27,7 @@ function App() {
     fetch(apiUrl)
       .catch(() => {}) // Ignorar errores temporales de red
       .finally(() => {
-        // En cuanto el servidor responde (despierta), cancelamos el temporizador y ocultamos el cartel
+        // En cuanto el servidor responde (despierta), cancela el temporizador y ocultamos el cartel
         clearTimeout(timer);
         setIsServerWakingUp(false);
       });

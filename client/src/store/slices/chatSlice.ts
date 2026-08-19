@@ -23,12 +23,14 @@ const initialState: ChatState = {
   error: null,
 };
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 // Async Thunks para HTTP
 export const fetchChannels = createAsyncThunk(
   "chat/fetchChannels",
   async (userId: string, { rejectWithValue }) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/channels?userId=${userId}`);
+      const res = await fetch(`${BASE_URL}/api/channels?userId=${userId}`);
       if (!res.ok) throw new Error("Error al recuperar canales");
       return (await res.json()) as Channel[];
     } catch (err: any) {
@@ -41,7 +43,7 @@ export const fetchUsers = createAsyncThunk(
   "chat/fetchUsers",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await fetch("http://localhost:5000/api/users");
+      const res = await fetch("${BASE_URL}/api/users");
       if (!res.ok) throw new Error("Error al cargar usuarios");
       return (await res.json()) as User[];
     } catch (err: any) {
@@ -57,7 +59,7 @@ export const createChannel = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch("http://localhost:5000/api/channels", {
+      const res = await fetch("${BASE_URL}/api/channels", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, isPrivate: true, createdBy }),
@@ -77,7 +79,7 @@ export const addMemberByTag = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/channels/${channelId}/members`, {
+      const res = await fetch(`${BASE_URL}/api/channels/${channelId}/members`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ requestingUserId, userTag }),
@@ -98,7 +100,7 @@ export const deleteChannel = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/channels/${channelId}?userId=${userId}`, {
+      const res = await fetch(`${BASE_URL}/api/channels/${channelId}?userId=${userId}`, {
         method: "DELETE",
       });
       const data = await res.json();
@@ -115,7 +117,7 @@ export const leaveChannel = createAsyncThunk(
   async ({ channelId, userId }: { channelId: string; userId: string }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:5000/api/channels/${channelId}/leave`, {
+      const res = await fetch(`${BASE_URL}/api/channels/${channelId}/leave`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
