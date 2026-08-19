@@ -7,20 +7,22 @@ const router = Router();
 
 // Obtener canales de un usuario (GET /) - Excluye chats directos para no duplicar en la UI
 router.get("/", async (req, res) => {
-  const { userId } = req.query;
+  const userId = req.query.userId as string;
   try {
     if (!userId) {
       return res.status(400).json({ message: "Se requiere userId" });
     }
     
     // Busca los canales del usuario EXCLUYENDO los de chat directo (direct_)
-    const channels = await Channel.find({ 
+    const query: any = { 
       members: userId,
       name: { $not: /^direct_/ }
-    })
-    .populate("members", "name email avatar status discriminator")
-    .populate("createdBy", "name email")
-    .sort({ updatedAt: -1 });
+    };
+
+    const channels = await Channel.find(query)
+      .populate("members", "name email avatar status discriminator")
+      .populate("createdBy", "name email")
+      .sort({ updatedAt: -1 });
     
     res.json(channels);
   } catch (err) {
@@ -73,7 +75,7 @@ router.post("/direct", async (req, res) => {
       await channel.save();
     } else {
       // Re-vincular a ambos usuarios como miembros por si alguno fue removido
-      const currentMemberIds = channel.members.map((m) => m.toString());
+      const currentMemberIds = channel.members.map((m: any) => m.toString());
       let modified = false;
 
       if (!currentMemberIds.includes(user1.toString())) {
@@ -129,18 +131,18 @@ router.post("/", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const channelId = req.params.id;
-    const { userId } = req.query;
+    const userId = req.query.userId as string;
 
     const channel = await Channel.findById(channelId);
     if (!channel) return res.status(404).json({ message: "Canal no encontrado" });
 
     // Verificar si es el creador
-    if (channel.createdBy.toString() !== userId) {
+    if (channel.createdBy && channel.createdBy.toString() !== userId) {
       return res.status(403).json({ message: "No tienes permiso para borrar este canal" });
     }
 
     // Guardar lista de miembros antes de borrar
-    const memberIds = channel.members.map((m) => m.toString());
+    const memberIds = channel.members.map((m: any) => m.toString());
 
     await Channel.findByIdAndDelete(channelId);
 
@@ -149,7 +151,7 @@ router.delete("/:id", async (req, res) => {
     if (io) {
       io.to(channelId).emit("channel_deleted", channelId);
 
-      memberIds.forEach((mId) => {
+      memberIds.forEach((mId: string) => {
         io.to(mId).emit("channel_deleted", channelId);
       });
     }
@@ -207,14 +209,14 @@ router.post("/:id/members", async (req, res) => {
     }
 
     // Validar si el usuario que realiza la solicitud es admin
-    const isAdmin = channel.admins.some((id) => id.toString() === requestingUserId);
+    const isAdmin = channel.admins.some((id: any) => id.toString() === requestingUserId);
     if (!isAdmin) {
       return res.status(403).json({ message: "Solo los administradores pueden agregar miembros" });
     }
 
     // Valida si ya es miembro
     const isAlreadyMember = channel.members.some(
-      (m) => m.toString() === targetUser._id.toString()
+      (m: any) => m.toString() === targetUser._id.toString()
     );
     if (isAlreadyMember) {
       return res.status(400).json({ message: "El usuario ya es miembro de este canal" });
@@ -251,12 +253,12 @@ router.delete("/:id/members/:memberId", async (req, res) => {
     const channel = await Channel.findById(req.params.id);
     if (!channel) return res.status(404).json({ message: "Canal no encontrado" });
 
-    const isAdmin = channel.admins.some((id) => id.toString() === requestingUserId);
+    const isAdmin = channel.admins.some((id: any) => id.toString() === requestingUserId);
     if (!isAdmin) {
       return res.status(403).json({ message: "Solo los administradores pueden borrar personas" });
     }
 
-    channel.members = channel.members.filter((id) => id.toString() !== req.params.memberId);
+    channel.members = channel.members.filter((id: any) => id.toString() !== req.params.memberId);
     await channel.save();
     res.json(channel);
   } catch (err) {
@@ -280,10 +282,10 @@ router.post("/:id/leave", async (req, res) => {
     }
 
     channel.members = channel.members.filter(
-      (m) => m.toString() !== userId.toString()
+      (m: any) => m.toString() !== userId.toString()
     );
     channel.admins = channel.admins.filter(
-      (a) => a.toString() !== userId.toString()
+      (a: any) => a.toString() !== userId.toString()
     );
 
     await channel.save();

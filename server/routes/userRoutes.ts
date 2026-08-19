@@ -40,7 +40,7 @@ router.get("/", async (_req: Request, res: Response) => {
   }
 });
 
-// POST /api/users/add-contact - Agregar contacto por Nombre#1234 o Tag
+// Agregar contacto por Nombre#1234 o Tag
 router.post("/add-contact", authenticate, async (req: any, res: Response) => {
   try {
     const { contactTag, targetTag, username, discriminator, tag: inputTag, userTag, userId: bodyUserId } = req.body;

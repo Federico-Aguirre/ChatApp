@@ -5,11 +5,11 @@ import Message from "../models/Message";
 // Obtener canales públicos o en los que participa/creó el usuario
 export const getChannels = async (req: Request, res: Response) => {
   try {
-    const { userId } = req.query;
+    const userId = typeof req.query.userId === "string" ? req.query.userId : undefined;
 
     const baseFilter = { isDirect: { $ne: true } };
 
-    const query = userId
+    const query: any = userId
       ? {
           ...baseFilter,
           $or: [
